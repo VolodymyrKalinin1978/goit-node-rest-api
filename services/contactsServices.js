@@ -43,7 +43,7 @@ export async function editContact(name, email, phone, id) {
     contact.email = email;
   }
   if (phone) {
-    contact.phone = country;
+    contact.phone = phone;
   }
 
   await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
