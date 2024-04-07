@@ -4,6 +4,7 @@ import {
   addContact,
   removeContact,
   editContact,
+  editStatusContact,
 } from "../services/contactsServices.js";
 
 export const getAllContacts = async (_, res) => {
@@ -13,30 +14,31 @@ export const getAllContacts = async (_, res) => {
 };
 
 export const getOneContact = async (req, res) => {
-  const { id } = req.params;
-  const contact = await getContactById(id);
+  const contactBiId = await getContactById(req);
 
-  return res.status(200).json(contact);
+  return res.status(200).json(contactBiId);
 };
 
 export const deleteContact = async (req, res) => {
-  const { id } = req.params;
-  const removedContact = await removeContact(id);
+  const removedContact = await removeContact(req);
 
   return res.status(200).json(removedContact);
 };
 
 export const createContact = async (req, res) => {
-  const { name, email, phone } = req.body;
-  const contact = await addContact(name, email, phone);
+  const createContact = await addContact(req);
 
-  res.status(201).json(contact);
+  res.status(201).json(createContact);
 };
 
 export const updateContact = async (req, res) => {
-  const { id } = req.params;
-  const { name, email, phone } = req.body;
-  const contact = await editContact(name, email, phone, id);
+  const updateContact = await editContact(req);
 
-  res.status(200).json(contact);
+  res.status(200).json(updateContact);
+};
+
+export const updateStatusContact = async (req, res) => {
+  const favoriteContact = await editStatusContact(req);
+
+  res.status(200).json(favoriteContact);
 };

@@ -5,11 +5,13 @@ import {
   deleteContact,
   createContact,
   updateContact,
+  updateStatusContact,
 } from "../controllers/contactsControllers.js";
 import validateBody from "../helpers/validateBody.js";
 import {
   createContactSchema,
   updateContactSchema,
+  updateContactStatusSchema,
 } from "../schemas/contactsSchemas.js";
 import { checkUpdateBody } from "../middelware/checkUpdateBody.js";
 import { checkId } from "../middelware/checkId.js";
@@ -30,6 +32,12 @@ contactsRouter.put(
   checkUpdateBody,
   validateBody(updateContactSchema),
   updateContact
+);
+contactsRouter.patch(
+  "/:id/favorite",
+  checkId,
+  validateBody(updateContactStatusSchema),
+  updateStatusContact
 );
 
 export default contactsRouter;
