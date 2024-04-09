@@ -1,62 +1,17 @@
-import { promises as fs } from "fs";
-import { v4 } from 'uuid';
-import path from "path";
+import { Contacts } from "../models/contactModel.js";
 
-const { readFile, writeFile } = fs;
 
-const contactsPath = path.join("db", "contacts.json");
+export const listContacts = async () => Contacts.find();
 
-export async function listContacts() {
-  const data = await readFile(contactsPath);
-  const contacts = JSON.parse(data);
-  return contacts;
-}
+export const getContactById = async (req) => Contacts.findById(req.params.id);
 
-export async function getContactById(contactId) {
-  const contact = await listContacts();
-  const result = contact.find((item) => item.id === contactId);
-  return result || null;
-}
+export const addContact = async (req) => Contacts.create(req.body);
 
-export async function addContact(name, email, phone) {
-  const contacts = await listContacts();
+export const editContact = async (req) =>
+  Contacts.findByIdAndUpdate(req.params.id, req.body, { new: true });
 
-  const newContacts = {
-    id: v4(),
-    name,
-    email,
-    phone,
-  };
-  contacts.push(newContacts);
-  await writeFile(contactsPath, JSON.stringify(contacts, null, 2));
-  return newContacts;
-}
+export const editStatusContact = async (req) =>
+  Contacts.findByIdAndUpdate(req.params.id, req.body, { new: true });
 
-export async function editContact(name, email, phone, id) {
-  const contacts = await listContacts();
-  const contact = contacts.find((item) => item.id === id);
-
-  if (name) {
-    contact.name = name;
-  }
-  if (email) {
-    contact.email = email;
-  }
-  if (phone) {
-    contact.phone = phone;
-  }
-
-  await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
-  return contact;
-}
-
-export async function removeContact(contactId) {
-  const contacts = await listContacts();
-  const index = contacts.findIndex((item) => item.id === contactId);
-  if (index === -1) {
-    return null;
-  }
-  const [result] = contacts.splice(index, 1);
-  await writeFile(contactsPath, JSON.stringify(contacts, null, 2));
-  return result;
-}
+export const removeContact = async (req) =>
+  Contacts.findByIdAndDelete(req.params.id);
