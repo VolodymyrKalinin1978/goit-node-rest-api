@@ -1,3 +1,4 @@
+import HttpError from "../helpers/HttpError.js";
 import {
   listContacts,
   getContactById,
@@ -7,38 +8,46 @@ import {
   editStatusContact,
 } from "../services/contactsServices.js";
 
-export const getAllContacts = async (_, res) => {
-  const contacts = await listContacts();
-
-  res.status(200).json(contacts);
-};
-
-export const getOneContact = async (req, res) => {
-  const contactBiId = await getContactById(req);
-
-  return res.status(200).json(contactBiId);
-};
-
-export const deleteContact = async (req, res) => {
-  const removedContact = await removeContact(req);
-
-  return res.status(200).json(removedContact);
-};
-
 export const createContact = async (req, res) => {
-  const createContact = await addContact(req);
+  const result = await addContact(req);
 
-  res.status(201).json(createContact);
+  res.status(201).json(result);
 };
 
-export const updateContact = async (req, res) => {
-  const updateContact = await editContact(req);
+export const getAllContacts = async (_, res) => {
+  const result = await listContacts();
 
-  res.status(200).json(updateContact);
+  res.status(200).json(result);
 };
 
-export const updateStatusContact = async (req, res) => {
-  const favoriteContact = await editStatusContact(req);
+export const getOneContact = async (req, res, next) => {
+  const result = await getContactById(req);
+  if (result === null) {
+    return next(HttpError(404));
+  }
+  return res.status(200).json(result);
+};
 
-  res.status(200).json(favoriteContact);
+export const updateContact = async (req, res, next) => {
+  const result = await editContact(req);
+  if (result === null) {
+    return next(HttpError(404));
+  }
+  res.status(200).json(result);
+};
+
+export const updateStatusContact = async (req, res, next) => {
+  const result = await editStatusContact(req);
+  if (result === null) {
+    return next(HttpError(404));
+  }
+  res.status(200).json(result);
+};
+
+export const deleteContact = async (req, res, next) => {
+  const result = await removeContact(req);
+  if (result === null) {
+    return next(HttpError(404));
+  }
+  return res.status(200).json(result);
 };

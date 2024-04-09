@@ -21,4 +21,3 @@ const contactSchema = new Schema(
 );
 
 export const Contacts = model("contacts", contactSchema);
-  

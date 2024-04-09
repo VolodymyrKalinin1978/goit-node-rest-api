@@ -14,28 +14,28 @@ import {
   updateContactStatusSchema,
 } from "../schemas/contactsSchemas.js";
 import { checkUpdateBody } from "../middelware/checkUpdateBody.js";
-import { checkId } from "../middelware/checkId.js";
+import { isValidId } from "../middelware/isValidId.js";
 
 const contactsRouter = express.Router();
 
 contactsRouter.get("/", getAllContacts);
 
-contactsRouter.get("/:id", checkId, getOneContact);
+contactsRouter.get("/:id", isValidId, getOneContact);
 
-contactsRouter.delete("/:id", checkId, deleteContact);
+contactsRouter.delete("/:id", isValidId, deleteContact);
 
 contactsRouter.post("/", validateBody(createContactSchema), createContact);
 
 contactsRouter.put(
   "/:id",
-  checkId,
+  isValidId,
   checkUpdateBody,
   validateBody(updateContactSchema),
   updateContact
 );
 contactsRouter.patch(
   "/:id/favorite",
-  checkId,
+  isValidId,
   validateBody(updateContactStatusSchema),
   updateStatusContact
 );
