@@ -8,17 +8,14 @@ import {
   editStatusContact,
 } from "../services/contactsServices.js";
 
-export const createContact = async (req, res) => {
-  const result = await addContact(req);
+export const createContact = async (req, res) => 
+    res.status(201).json(await addContact(req));
 
-  res.status(201).json(result);
-};
 
-export const getAllContacts = async (_, res) => {
-  const result = await listContacts();
+export const getAllContacts = async (req, res) => 
+   res.status(200).json(await listContacts(req));
 
-  res.status(200).json(result);
-};
+
 
 export const getOneContact = async (req, res, next) => {
   const result = await getContactById(req);
