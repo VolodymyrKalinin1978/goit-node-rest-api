@@ -9,7 +9,7 @@ import { createUser, getUser } from "../services/authServices.js";
 
 export const registerUser = async (req, res, next) => {
   const newUser = await createUser(req, res, next); 
-   
+  if (newUser === undefined || newUser === null || newUser === false ) return; 
   res.status(201).json({
     user: {
       email: newUser.email,
@@ -21,8 +21,7 @@ export const registerUser = async (req, res, next) => {
 export const loginUser = async (req, res, next) => 
  res.json(await getUser(req, res, next));
 
-
-
+ 
 export const getCurrentUser = async (req, res) => {
   const { email, subscription } = req.user;
 

@@ -5,22 +5,22 @@ import { User } from "../models/authModel.js";
 import HttpError from "../helpers/HttpError.js";
 
 
-export const createUser = async (req, res, next) => {
+export const createUser = async (req, _, next) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
-
+    
   if (user) {
-    return next(HttpError(409, "Email in use"));
+    return next(HttpError(409, "Email in use")); 
   }
 
   const hashPassword = await bcrypt.hash(password, 10);
   const newUser = await User.create({ ...req.body, password: hashPassword });
-
+  
   return newUser;
 };
 
 
-export const getUser = async (req, res, next) => {
+export const getUser = async (req,  _, next) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
   if (!user) {

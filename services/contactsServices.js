@@ -26,16 +26,56 @@ export const listContacts = async (req) => {
   };
 };
 
-export const getContactById = async (req) => Contacts.findById(req.params.id);
-
+export const getContactById = async (req) => {
+  const contacts = await Contacts.findById(req.params.id);
+  if (
+    !contacts ||
+    !contacts.owner ||
+    !req.user ||
+    !contacts.owner.equals(req.user._id)
+  ) {
+    return undefined;
+  }
+  return contacts;
+};
 export const addContact = async (req) =>
   Contacts.create({ ...req.body, owner: req.user.id });
 
-export const editContact = async (req) =>
-  Contacts.findByIdAndUpdate(req.params.id, req.body, { new: true });
+export const editContact = async (req) => {
+  const contacts = await Contacts.findById(req.params.id);
+  if (
+    !contacts ||
+    !contacts.owner ||
+    !req.user ||
+    !contacts.owner.equals(req.user._id)
+  ) {
+    return undefined;
+  }
+  return Contacts.findByIdAndUpdate(req.params.id, req.body, { new: true });
+};
 
-export const editStatusContact = async (req) =>
-  Contacts.findByIdAndUpdate(req.params.id, req.body, { new: true });
+export const editStatusContact = async (req) => {
+  const contacts = await Contacts.findById(req.params.id);
+  if (
+    !contacts ||
+    !contacts.owner ||
+    !req.user ||
+    !contacts.owner.equals(req.user._id)
+  ) {
+    return undefined;
+  }
+  return Contacts.findByIdAndUpdate(req.params.id, req.body, { new: true });
+};
 
-export const removeContact = async (req) =>
-  Contacts.findByIdAndDelete(req.params.id);
+export const removeContact = async (req) => {
+  const contacts = await Contacts.findById(req.params.id);
+  if (
+    !contacts ||
+    !contacts.owner ||
+    !req.user ||
+    !contacts.owner.equals(req.user._id)
+  ) {
+    return undefined;
+  }
+  return Contacts.findByIdAndDelete(req.params.id);
+};
