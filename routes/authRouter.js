@@ -7,9 +7,11 @@ import {
   logoutUser,
   registerUser,
   updateUser,
+  updateUserAvatar,
 } from "../controllers/authControllers.js";
 
 import { authenticate } from "../middelware/authenticate.js";
+import { upload } from "../middelware/uploadAvatar.js";
 
 
 const authRouter = express.Router();
@@ -23,5 +25,6 @@ authRouter.get("/current", authenticate, getCurrentUser);
 authRouter.post("/logout", authenticate, logoutUser);
 
 authRouter.patch("/", authenticate, updateUser);
+authRouter.patch("/avatars", authenticate, upload.single("avatarURL"), updateUserAvatar);
 
 export default authRouter;

@@ -1,27 +1,27 @@
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import Jimp from "jimp";
+import path from "path";
 
 import { User } from "../models/authModel.js";
-
-import HttpError from "../helpers/HttpError.js";
 import { createUser, getUser } from "../services/authServices.js";
+import HttpError from "../helpers/HttpError.js";
 
+const avatarPath = path.resolve("public", "avatars");
 
 export const registerUser = async (req, res, next) => {
-  const newUser = await createUser(req, res, next); 
-  if (newUser === undefined || newUser === null || newUser === false ) return; 
+  const newUser = await createUser(req, res, next);
+  if (newUser === undefined || newUser === null || newUser === false) return;
   res.status(201).json({
     user: {
       email: newUser.email,
       subscription: newUser.subscription,
-    }
+      avatarURL: newUser.avatarURL,
+    },
   });
 };
 
-export const loginUser = async (req, res, next) => 
- res.json(await getUser(req, res, next));
+export const loginUser = async (req, res, next) =>
+  res.json(await getUser(req, res, next));
 
- 
 export const getCurrentUser = async (req, res) => {
   const { email, subscription } = req.user;
 
@@ -41,9 +41,38 @@ export const logoutUser = async (req, res) => {
 
 export const updateUser = async (req, res) => {
   const { _id } = req.user;
-  const  {subscription} = req.body
+  const { subscription } = req.body;
   console.log(_id);
   await User.findByIdAndUpdate(_id, { subscription });
 
   res.sendStatus(200);
+};
+
+export const updateUserAvatar = async (req, res, next) => {
+  if (!req.file) {
+    return next(HttpError(401, "Not authorized"));
+  }
+
+  let { avatarURL, _id } = req.user;
+
+  const { path: oldPath, filename } = req.file;
+
+  Jimp.read(oldPath, (err, image) => {
+    if (err) throw err;
+
+    image.resize(250, 250);
+
+    const newPath = path.join(avatarPath, filename);
+    image.write(newPath);
+  });
+
+  const poster = path.join("avatars", filename);
+  avatarURL = poster;
+  console.log(avatarURL);
+
+  await User.findByIdAndUpdate(_id, { avatarURL });
+
+  res.status(200).json({
+    avatarURL: avatarURL,
+  });
 };
