@@ -1,5 +1,6 @@
 import Jimp from "jimp";
 import path from "path";
+import fs from 'fs';
 
 import { User } from "../models/authModel.js";
 import { createUser, getUser } from "../services/authServices.js";
@@ -50,7 +51,7 @@ export const updateUser = async (req, res) => {
 
 export const updateUserAvatar = async (req, res, next) => {
   if (!req.file) {
-    return next(HttpError(401, "Not authorized"));
+    return next(HttpError(400, "No file uploaded"));
   }
 
   let { avatarURL, _id } = req.user;
@@ -64,6 +65,13 @@ export const updateUserAvatar = async (req, res, next) => {
 
     const newPath = path.join(avatarPath, filename);
     image.write(newPath);
+  });
+
+   
+   fs.unlink(oldPath, (err) => {
+    if (err) {
+      console.error("Error deleting old images:", err);
+    }
   });
 
   const poster = path.join("avatars", filename);
