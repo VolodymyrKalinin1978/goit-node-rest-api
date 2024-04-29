@@ -32,6 +32,8 @@ export const getCurrentUser = async (req, res) => {
   });
 };
 
+
+
 export const logoutUser = async (req, res) => {
   const { _id } = req.user;
   console.log(_id);
