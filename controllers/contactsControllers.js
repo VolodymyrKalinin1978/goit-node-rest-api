@@ -45,4 +45,6 @@ export const deleteContact = async (req, res, next) => {
     return next(HttpError(404));
   }
   return res.status(200).json(result);
+
+  
 };
