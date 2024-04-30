@@ -22,9 +22,16 @@ const userSchema = new Schema(
     },
     avatarURL: {
       type: String,
-    }
+    },
+    verify: {
+      type: Boolean,
+      default: false,
+    },
+    verificationToken: {
+      type: String,
+    },
   },
-  { versionKey: false } 
+  { versionKey: false }
 );
 
 export const User = model("users", userSchema);
